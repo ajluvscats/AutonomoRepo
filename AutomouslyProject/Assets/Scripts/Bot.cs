@@ -2,9 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
-public class NewBehaviourScript : MonoBehaviour
-{
 
+public class Bot : MonoBehaviour
+{
     NavMeshAgent agent;
     public GameObject target;
 
@@ -19,9 +19,23 @@ public class NewBehaviourScript : MonoBehaviour
     {
         agent.SetDestination(location);
     }
+
+    void Flee(Vector3 location)
+    {
+        Vector3 fleeVector =location - this.transform.position;
+        agent.SetDestination(this.transform.position - fleeVector);
+    }
+
+    void Pursure()
+    {
+        Vector3 targetDir = target.transform.position - this.transform.position;
+
+        float lookAhead = targetDir.magnitude / (agent.speed + target.GetComponent<Drive>().currentSpeed);
+        Seek(target.transform.position + target.transform.forward * lookAhead);
+    }
     // Update is called once per frame
     void Update()
     {
-        Seek(target.transform.position);
+        Pursure();
     }
 }
